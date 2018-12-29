@@ -1,0 +1,30 @@
+yes
+buyer
+buyer1,123
+yes
+seller
+seller1,123
+no
+seller
+seller1,123
+add inventory 1 product1 A01 1.11
+add inventory 2 product2 A01 1.11
+remove inventory 1 product2 
+browse inventory
+signout
+no
+buyer
+buyer1,123
+add cart product1 1 from seller1
+add cart product2 1 from seller1
+remove cart product1 1 from seller1
+browse cart
+checkout
+browse transaction
+signout
+no
+seller
+seller1,123
+set fixPromotion product1 0.1
+browse promotion
+browse transaction of buyer1
