@@ -1,0 +1,56 @@
+yes
+courseMgr
+courseManager1,123
+yes
+student
+Bob,123
+yes
+teacher
+teacher1,123
+yes
+financeMgr
+financeManager1,123
+no
+courseMgr
+courseManager1,123
+add offline math 50 Monday A216 0
+add offline physics 50 Tuesday A217 0
+add offline chemistry 50 Wednesday A218 0
+signout
+no
+student
+Bob,123
+signup math
+signup physics
+signup chemistry
+browse course
+drop physics
+view schedule
+create submission submission1
+create submission submission2
+create submission submission3
+delete submission submission3
+browse submission
+signout
+no
+teacher
+teacher1,123
+create assignment assignment1 Dec31 essay
+create assignment assignment2 Dec31 essay
+create assignment assignment3 Dec31 essay
+delete assignment assignment3
+browse assignment
+grade Bob submission assignment1 A
+grade Bob submission assignment2 A
+signout
+no
+financeMgr
+financeManager1,123
+add statusScholarship S001 $2000
+add meritScholarship M001 $1000
+delete meritScholarship M001
+browse scholarship map
+attach scholarship S001 to Bob
+browse scholarship assignment
+signout
+
