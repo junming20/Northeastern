@@ -1,4 +1,4 @@
-# assignment-1
+# CS5600 assignment-1
 Code for Assignment 1: An Arithmetic/Logic Unit (ALU)
 DUE DATE: Tue, Feb 4 by 11:59:59pm
 An Arithmetic/Logic Unit (ALU)
