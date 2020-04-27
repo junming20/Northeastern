@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# @file ttt_s
+#
+# Tic-Tac-Toe (Naughts and Crosses)
+# This implementation uses a string to represent the board
+#
+# @date Jan 1, 2020
+# @author philip gust
+#
+
+# read ttt board definitions
+dir=$(dirname "$0")
+source "$dir/ttt_board_s"
+
+
+##
+#  Play an interactive game of tic-tac-toe.
+#
+play_ttt() {
+	declare -r -i maxturns=9	# number of turns in game
+	declare -r -a markers=(X O)	# markers for X and O
+	declare -i turn
+
+	# initialize the board
+	local tttBoard=$(initBoard)
+
+	# display the initial board
+	displayBoard $tttBoard
+	
+	# play until there is a draw or a player has won
+	for ((turn=0; turn < maxturns; turn+=1)); do
+		# get marker for turn
+		local theMarker=${markers[((turn%2))]}
+		
+		# wait for valid input
+		while true; do
+			printf "Player %s, enter the position you want to play.\n" $theMarker
+			read -r boardPos
+
+			# mark the position and break if successful
+			tttBoard=$(markBoard $theMarker $boardPos $tttBoard) && break		
+		done
+
+		# display the current board
+		displayBoard $tttBoard
+		
+		# see if player has won
+		if hasWon $theMarker $tttBoard ; then
+			printf 'Player %s has won.\n' $theMarker
+			return;
+		fi
+	done
+
+	printf "The game ends in a tie.\n"
+}
+
+# play game
+play_ttt

@@ -1,0 +1,285 @@
+#!/bin/bash
+
+# @file ttt_a_test
+#
+# Tic-Tac-Toe (Naughts and Crosses)
+# Tests the array representation of the board
+#
+# Markers: X: x marker, O: o marker, _: no marker
+#
+# @date Jan 1, 2020
+# @author philip gust
+#
+
+# read ttt board definitions
+dir=$(dirname "$0")
+source "$dir/ttt_board_a"
+source "$dir/unit_test"
+
+
+##
+#  Play an interactive game of tic-tac-toe.
+#  X win in a row
+#
+test_X_winRow() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+
+	# Y first move to position 9
+	markBoard O 9 tttBoard
+	sol=( X _ _ _ _ _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+
+    markBoard X 2 tttBoard
+	sol=( X X _ _ _ _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 8 tttBoard
+	sol=( X X _ _ _ _ _ O O )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 3 tttBoard
+	sol=( X X X _ _ _ _ O O )
+	assertArrayEqual tttBoard sol
+
+    # X has won
+	hasWon X tttBoard
+	assertStatusSuccess
+
+    # O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+}
+
+##
+#  X win in a column.
+#
+test_X_winCol() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+
+	# Y first move to position 9
+	markBoard O 9 tttBoard
+	sol=( X _ _ _ _ _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+    markBoard X 4 tttBoard
+	sol=( X _ _ X _ _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 8 tttBoard
+	sol=( X _ _ X _ _ _ O O )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 7 tttBoard
+	sol=( X _ _ X _ _ X O O )
+	assertArrayEqual tttBoard sol
+
+    # X has won
+	hasWon X tttBoard
+	assertStatusSuccess
+
+    # O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+}
+
+
+##
+#  X win diagonally.(left upper to right lower)
+#
+test_X_winDia1() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+
+	# Y first move to position 9
+	markBoard O 7 tttBoard
+	sol=( X _ _ _ _ _ O _ _ )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+    markBoard X 5 tttBoard
+	sol=( X _ _ _ X _ O _ _ )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 8 tttBoard
+	sol=( X _ _ _ X _ O O _ )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 9 tttBoard
+	sol=( X _ _ _ X _ O O X )
+	assertArrayEqual tttBoard sol
+
+    # X has won
+	hasWon X tttBoard
+	assertStatusSuccess
+
+    # O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+}
+
+##
+#  X win diagonally.(left lower to right upper)
+#
+test_X_winDia2() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 3 tttBoard
+	sol=( _ _ X _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+
+	# Y first move to position 9
+	markBoard O 9 tttBoard
+	sol=( _ _ X _ _ _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+    markBoard X 5 tttBoard
+	sol=( _ _ X _ X _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 8 tttBoard
+	sol=( _ _ X _ X _ _ O O )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 7 tttBoard
+	sol=( _ _ X _ X _ X O O )
+	assertArrayEqual tttBoard sol
+
+    # X has won
+	hasWon X tttBoard
+	assertStatusSuccess
+
+    # O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+}
+
+##
+#  No winner.(draw)
+#
+test_draw() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 9 tttBoard
+	sol=( _ _ _ _ _ _ _ _ X )
+	assertArrayEqual tttBoard sol
+
+	# Y first move to position 9
+	markBoard O 1 tttBoard
+	sol=( O _ _ _ _ _ _ _ X )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+    markBoard X 8 tttBoard
+	sol=( O _ _ _ _ _ _ X X )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 2 tttBoard
+	sol=( O O _ _ _ _ _ X X )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 3 tttBoard
+	sol=( O O X _ _ _ _ X X )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 7 tttBoard
+	sol=( O O X _ _ _ O X X )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 4 tttBoard
+	sol=( O O X X _ _ O X X )
+	assertArrayEqual tttBoard sol
+
+	markBoard O 6 tttBoard
+	sol=( O O X X _ O O X X )
+	assertArrayEqual tttBoard sol
+
+	markBoard X 5 tttBoard
+	sol=( O O X X X O O X X )
+	assertArrayEqual tttBoard sol
+
+    # X has not won
+	hasWon X tttBoard
+	assertStatusFailure
+
+    # O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+}
+
+##
+#  Validation
+#
+test_validation() {
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol	
+
+	# Test with the position already marked
+    markBoard X 1 tttBoard
+    assertStatusFailure
+
+    # Test with the positon out of range 
+    markBoard X 10 tttBoard
+    assertStatusFailure
+}
+
+runUnitTest test_X_winRow
+runUnitTest test_X_winCol
+runUnitTest test_X_winDia1
+runUnitTest test_X_winDia2
+runUnitTest test_draw
+runUnitTest test_validation
+
+# show unit test summary
+unitTestSummary

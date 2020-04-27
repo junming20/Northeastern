@@ -1,0 +1,265 @@
+#!/bin/bash
+##
+# Definitions for unit test functions.
+
+# assertion counts
+assertFail=0;
+assertPass=0
+assertCount=0
+unitTestFail=0
+
+##
+# Report failure of assertion. Can only be called by asset functions
+# @param actual value (optional)
+# @param expected value (optional)
+# @return failure message string
+#
+reportFail() {
+    local line="${BASH_LINENO[1]}" # line that called assert
+    local src="$(basename ${BASH_SOURCE[2]})"  # source file that called assert
+    local func="${FUNCNAME[1]}"  # assert function called
+	printf "%4d. %s.%d - %s: " $((assertFail-unitTestFail)) "$src" $line "$func" 
+	if [ $# -eq 0 ]; then
+      printf "assertion failed\n"
+	elif [ $# -eq 1 ]; then
+      printf "actual: %s\n" "$1"
+    elif [ $# -eq 2 ]; then
+      printf "actual: %s expected: %s\n" "$1" "$2"
+	else
+      printf "assertion failed (unexpected argument count: %d)\n" $#
+    fi
+}
+
+##
+# Assert actual and expected strings are equal.
+# @param actual string
+# @param expected string
+#
+assertStringEqual() {
+    assertCount=$((assertCount+1))
+    if [ "$1" != "$2" ]; then
+		assertFail=$((assertFail+1))
+        reportFail "\"$1\"" "\"$2\"" 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual and expected strings are not equal.
+# @param actual string
+# @param expected string
+#
+assertStringNotEqual() {
+    assertCount=$((assertCount+1))
+    if [ "$1" = "$2" ]; then
+		assertFail=$((assertFail+1))
+        reportFail "\"$1\"" "\"$2\"" 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual and expected arrays are equal.
+# @param actual array
+# @param expected array
+#
+assertArrayEqual() {
+    assertCount=$((assertCount+1))
+	declare -n a1=$1	#name reference for actual array
+	declare -n a2=$2	#name reference for expected array
+	local s1="${a1[@]}"
+	local s2="${a2[@]}"
+
+    if [ "$s1" != "$s2" ]; then
+		assertFail=$((assertFail+1))
+        reportFail "( $s1 )" "( $s2 )" 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual and expected arrays are not equal.
+# @param actual array
+# @param expected array
+#
+assertArrayNotEqual() {
+    assertCount=$((assertCount+1))
+	declare -n a1=$1	#name reference for actual array
+	declare -n a2=$2	#name reference for expected array
+	local s1="${a1[@]}"
+	local s2="${a2[@]}"
+
+    if [ "$s1" = "$s2" ]; then
+		assertFail=$((assertFail+1))
+        reportFail "( $s1 )" "( $s2 )" 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual and expected numerical values are equal.
+# @param actual value
+# @param expected value
+#
+assertEqual() {
+    assertCount=$((assertCount+1))
+    if [ "$1" -ne "$2" ]; then
+		assertFail=$((assertFail+1))
+        reportFail $1 $2 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual and expected numerical values are not equal.
+# @param actual value
+# @param expected value
+#
+assertNotEqual() {
+    assertCount=$((assertCount+1))
+    if [ "$1" -eq "$2" ]; then
+		assertFail=$((assertFail+1))
+        reportFail $1 $2 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual value is status success (= 0)
+# @param actual value (optional -- uses $? by default))
+#
+assertStatusSuccess() {
+    local status=$?
+    if [ $# -eq 1 ]; then
+        status=$1
+    fi
+    assertCount=$((assertCount+1))
+    if [ "$status" != "0" ]; then
+		assertFail=$((assertFail+1))
+        reportFail "$status" 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual value is status failure (= 0)
+# @param actual value (optional -- uses $? by default))
+#
+assertStatusFailure() {
+    local status=$?
+    if [ $# -eq 1 ]; then
+        status=$1
+    fi
+    assertCount=$((assertCount+1))
+    if [ "$status" = "0" ]; then
+		assertFail=$((assertFail+1))
+        reportFail "$status" 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual value is true (!= 0)
+# @param actual value
+#
+assertTrue() {
+    assertCount=$((assertCount+1))
+    if [ "$1" = "0" ]; then
+		assertFail=$((assertFail+1))
+        reportFail $1 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# Assert actual value is false (= 0)
+# @param actual value
+#
+assertFalse() {
+    assertCount=$((assertCount+1))
+    if [ "$1" != "0" ]; then
+		assertFail=$((assertFail+1))
+        reportFail $1 1>&2
+        return 1
+    fi
+    assertPass=$((assertPass+1))
+    return 0;
+}
+
+##
+# fail test
+#
+fail() {
+    assertCount=$((assertCount+1))
+	assertFail=$((assertFail+1))
+    reportFail 1>&2
+    return 1
+}
+
+##
+# Run unit test function.
+# @return 0 if all passed, 1 if asserts failed
+#
+runUnitTest() {
+    local unitTest=$1
+
+	# record assertFail for comparison after test
+    unitTestFail=$assertFail
+
+	# reset assert count for unit test
+    local unitTestAssertCount=$assertCount
+    assertCount=0
+
+    # run test
+    echo "Running unit test $unitTest" 1>&2
+    $unitTest    
+
+    # restore assert count
+    assertCount=$((assertCount+unitTestAssertCount))    
+
+    #report test status
+    if [ $assertFail -eq $unitTestFail ]; then
+        echo "Unit test $unitTest passed" 1>&2
+	    echo "" 1>&2
+	    return 0
+    else
+        echo "Unit test $unitTest failed" 1>&2
+	    echo "" 1>&2
+	    return 1
+    fi
+}
+
+##
+# Show unit test summary.
+# @return 0 if all passed, 1 if asserts failed
+#
+unitTestSummary() {
+    echo "Test summary:" 1>&2
+    echo "asserts passed: $assertPass" 1>&2
+    echo "asserts failed: $assertFail" 1>&2
+    echo "total asserts:  $assertCount" 1>&2
+    if [ $assertFail -eq 0 ]; then
+    	return 0
+   	else
+   		return 1
+   	fi
+}
+
