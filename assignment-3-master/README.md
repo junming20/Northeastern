@@ -1,4 +1,4 @@
-# assignment-3
+# CS5600 assignment-3
 Starting code for assignment 3: enhanced K&amp;R memory allocator
 DUE DATE: Fri, March 13, 2020 by 11:59:59pm
 A Dynamic Memory Manager
